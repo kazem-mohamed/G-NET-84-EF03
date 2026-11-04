@@ -15,6 +15,7 @@ class Program
         EnrollStudent(context);
         FindCourse(context);
         FilterCourses(context, 60m, 140m);
+        PrintCategories(context, 1);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -200,5 +201,20 @@ class Program
         {
             Console.WriteLine($"{course.Title} | {course.Level} | {course.Price:C}");
         }
+    }
+
+    private static void PrintCategories(LearningPlatformContext context, int categoryId)
+    {
+        var subCategories = context.Categories
+            .Where(category => category.ParentCategoryId == categoryId)
+            .Select(category => category.Name)
+            .ToList();
+        Console.WriteLine($"Direct sub-categories: {string.Join(", ", subCategories)}");
+
+        var topLevelCategories = context.Categories
+            .Where(category => category.ParentCategoryId == null)
+            .Select(category => category.Name)
+            .ToList();
+        Console.WriteLine($"Top-level categories: {string.Join(", ", topLevelCategories)}");
     }
 }
