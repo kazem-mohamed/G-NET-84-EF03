@@ -17,6 +17,7 @@ class Program
         FilterCourses(context, 60m, 140m);
         PrintCategories(context, 1);
         PrintCourseRoster(context, 1);
+        ChangeCoursePrice(context, 1, 55m);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -237,5 +238,19 @@ class Program
             .ToList();
 
         Console.WriteLine($"Course {courseId} has {studentIds.Count} enrolled student(s): {string.Join(", ", studentNames)}");
+    }
+
+    private static void ChangeCoursePrice(LearningPlatformContext context, int courseId, decimal newPrice)
+    {
+        var course = context.Courses.Find(courseId);
+        if (course is null)
+        {
+            Console.WriteLine("Price update: course not found.");
+            return;
+        }
+
+        course.Price = newPrice;
+        context.SaveChanges();
+        Console.WriteLine($"Updated {course.Title} price to {course.Price:C}.");
     }
 }
