@@ -22,6 +22,7 @@ class Program
         PublishCourse(context, 3);
         UnenrollStudent(context, 4, 4);
         DeleteCategorySafely(context, 1);
+        DeleteCourse(context, 4);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -343,5 +344,23 @@ class Program
         context.Categories.Remove(category);
         context.SaveChanges();
         Console.WriteLine("Category deleted safely.");
+    }
+
+    private static void DeleteCourse(LearningPlatformContext context, int courseId)
+    {
+        var course = context.Courses.Find(courseId);
+        if (course is null)
+        {
+            Console.WriteLine("Delete course: course not found.");
+            return;
+        }
+
+        var enrollmentsBefore = context.Enrollments.Count(enrollment => enrollment.CourseId == courseId);
+        context.Courses.Remove(course);
+        context.SaveChanges();
+
+        // EnrollmentConfiguration specifies cascade delete for Course -> Enrollments.
+        var enrollmentsAfter = context.Enrollments.Count(enrollment => enrollment.CourseId == courseId);
+        Console.WriteLine($"Deleted course {courseId}; enrollments before: {enrollmentsBefore}, after: {enrollmentsAfter}.");
     }
 }
