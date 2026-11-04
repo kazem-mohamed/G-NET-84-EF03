@@ -18,6 +18,7 @@ class Program
         PrintCategories(context, 1);
         PrintCourseRoster(context, 1);
         ChangeCoursePrice(context, 1, 55m);
+        UpdateProgress(context, 1, 1, 100m);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -252,5 +253,30 @@ class Program
         course.Price = newPrice;
         context.SaveChanges();
         Console.WriteLine($"Updated {course.Title} price to {course.Price:C}.");
+    }
+
+    private static void UpdateProgress(LearningPlatformContext context, int studentId, int courseId, decimal progress)
+    {
+        if (progress is < 0m or > 100m)
+        {
+            Console.WriteLine("Progress update was refused: progress must be between 0 and 100.");
+            return;
+        }
+
+        var enrollment = context.Enrollments.Find(studentId, courseId);
+        if (enrollment is null)
+        {
+            Console.WriteLine("Progress update: enrollment not found.");
+            return;
+        }
+
+        enrollment.ProgressPercentage = progress;
+        if (progress == 100m)
+        {
+            enrollment.Status = EnrollmentStatus.Completed;
+        }
+
+        context.SaveChanges();
+        Console.WriteLine($"Updated progress to {progress}% with status {enrollment.Status}.");
     }
 }
