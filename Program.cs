@@ -11,6 +11,7 @@ class Program
         SeedStudentsAndEnrollments(context);
         AddInstructor(context);
         AddCourse(context);
+        AddSeveralStudents(context);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -116,5 +117,27 @@ class Program
         context.Courses.Add(course);
         context.SaveChanges();
         Console.WriteLine($"Created course with Id {course.Id}.");
+    }
+
+    private static void AddSeveralStudents(LearningPlatformContext context)
+    {
+        var emails = new[] { "student.one@learn.example", "student.two@learn.example", "student.three@learn.example" };
+        var existingStudents = context.Students.Where(student => emails.Contains(student.Email)).ToList();
+        if (existingStudents.Count > 0)
+        {
+            Console.WriteLine($"Students already exist with Ids: {string.Join(", ", existingStudents.Select(student => student.Id))}.");
+            return;
+        }
+
+        var students = new[]
+        {
+            new Student { FullName = "Salma Nabil", Email = emails[0], DateOfBirth = new DateTime(2000, 6, 1) },
+            new Student { FullName = "Tarek Fathy", Email = emails[1], DateOfBirth = new DateTime(2001, 7, 2) },
+            new Student { FullName = "Mariam Eid", Email = emails[2], DateOfBirth = new DateTime(2002, 8, 3) }
+        };
+
+        context.Students.AddRange(students);
+        context.SaveChanges();
+        Console.WriteLine($"Created students with Ids: {string.Join(", ", students.Select(student => student.Id))}.");
     }
 }
