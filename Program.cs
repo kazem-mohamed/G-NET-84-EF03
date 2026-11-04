@@ -20,6 +20,7 @@ class Program
         ChangeCoursePrice(context, 1, 55m);
         UpdateProgress(context, 1, 1, 100m);
         PublishCourse(context, 3);
+        UnenrollStudent(context, 4, 4);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -294,5 +295,19 @@ class Program
         course.PublishedDate ??= DateTime.UtcNow;
         context.SaveChanges();
         Console.WriteLine($"Published {course.Title} on {course.PublishedDate:O}.");
+    }
+
+    private static void UnenrollStudent(LearningPlatformContext context, int studentId, int courseId)
+    {
+        var enrollment = context.Enrollments.Find(studentId, courseId);
+        if (enrollment is null)
+        {
+            Console.WriteLine("Unenroll: enrollment not found.");
+            return;
+        }
+
+        context.Enrollments.Remove(enrollment);
+        context.SaveChanges();
+        Console.WriteLine($"Student {studentId} was unenrolled from course {courseId}.");
     }
 }
