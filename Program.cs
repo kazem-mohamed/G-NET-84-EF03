@@ -10,6 +10,7 @@ class Program
         context.Database.Migrate();
         SeedStudentsAndEnrollments(context);
         AddInstructor(context);
+        AddCourse(context);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -79,5 +80,41 @@ class Program
         context.Instructors.Add(instructor);
         context.SaveChanges();
         Console.WriteLine($"Created instructor with Id {instructor.Id}.");
+    }
+
+    private static void AddCourse(LearningPlatformContext context)
+    {
+        var instructor = context.Instructors.FirstOrDefault(item => item.Email == "new.instructor@learn.example");
+        var category = context.Categories.Find(3);
+
+        if (instructor is null || category is null)
+        {
+            Console.WriteLine("Course was not added because the instructor or category does not exist.");
+            return;
+        }
+
+        const string title = "Entity Framework Core Essentials";
+        var existingCourse = context.Courses.FirstOrDefault(course => course.Title == title);
+        if (existingCourse is not null)
+        {
+            Console.WriteLine($"Course already exists with Id {existingCourse.Id}.");
+            return;
+        }
+
+        var course = new Course
+        {
+            Title = title,
+            Description = "EF Core code-first course.",
+            Price = 130m,
+            Level = CourseLevel.Intermediate,
+            IsPublished = true,
+            PublishedDate = DateTime.UtcNow,
+            InstructorId = instructor.Id,
+            CategoryId = category.Id
+        };
+
+        context.Courses.Add(course);
+        context.SaveChanges();
+        Console.WriteLine($"Created course with Id {course.Id}.");
     }
 }
