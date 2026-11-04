@@ -24,6 +24,7 @@ class Program
         DeleteCategorySafely(context, 1);
         DeleteCourse(context, 4);
         RaisePublishedCoursePrices(context, CourseLevel.Advanced);
+        DeleteDroppedEnrollments(context);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -373,5 +374,14 @@ class Program
                 .SetProperty(course => course.Price, course => course.Price * 1.10m));
 
         Console.WriteLine($"Raised prices for {affectedRows} published {level} course(s).");
+    }
+
+    private static void DeleteDroppedEnrollments(LearningPlatformContext context)
+    {
+        var affectedRows = context.Enrollments
+            .Where(enrollment => enrollment.Status == EnrollmentStatus.Dropped)
+            .ExecuteDelete();
+
+        Console.WriteLine($"Deleted {affectedRows} dropped enrollment(s).");
     }
 }
