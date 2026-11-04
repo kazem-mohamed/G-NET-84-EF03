@@ -16,6 +16,7 @@ class Program
         FindCourse(context);
         FilterCourses(context, 60m, 140m);
         PrintCategories(context, 1);
+        PrintCourseRoster(context, 1);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -216,5 +217,25 @@ class Program
             .Select(category => category.Name)
             .ToList();
         Console.WriteLine($"Top-level categories: {string.Join(", ", topLevelCategories)}");
+    }
+
+    private static void PrintCourseRoster(LearningPlatformContext context, int courseId)
+    {
+        if (context.Courses.Find(courseId) is null)
+        {
+            Console.WriteLine("Course roster: course not found.");
+            return;
+        }
+
+        var studentIds = context.Enrollments
+            .Where(enrollment => enrollment.CourseId == courseId)
+            .Select(enrollment => enrollment.StudentId)
+            .ToList();
+        var studentNames = context.Students
+            .Where(student => studentIds.Contains(student.Id))
+            .Select(student => student.FullName)
+            .ToList();
+
+        Console.WriteLine($"Course {courseId} has {studentIds.Count} enrolled student(s): {string.Join(", ", studentNames)}");
     }
 }
