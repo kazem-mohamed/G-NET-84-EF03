@@ -12,6 +12,7 @@ class Program
         AddInstructor(context);
         AddCourse(context);
         AddSeveralStudents(context);
+        EnrollStudent(context);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -139,5 +140,40 @@ class Program
         context.Students.AddRange(students);
         context.SaveChanges();
         Console.WriteLine($"Created students with Ids: {string.Join(", ", students.Select(student => student.Id))}.");
+    }
+
+    private static void EnrollStudent(LearningPlatformContext context)
+    {
+        var student = context.Students.FirstOrDefault(item => item.Email == "student.one@learn.example");
+        var course = context.Courses.FirstOrDefault(item => item.Title == "Entity Framework Core Essentials");
+
+        if (student is null || course is null)
+        {
+            Console.WriteLine("Enrollment was refused because the student or course was not found.");
+            return;
+        }
+
+        if (!course.IsPublished)
+        {
+            Console.WriteLine("Enrollment was refused because the course is not published.");
+            return;
+        }
+
+        if (context.Enrollments.Find(student.Id, course.Id) is not null)
+        {
+            Console.WriteLine("Enrollment was refused because the student is already enrolled.");
+            return;
+        }
+
+        context.Enrollments.Add(new Enrollment
+        {
+            StudentId = student.Id,
+            CourseId = course.Id,
+            EnrollmentDate = DateTime.UtcNow,
+            ProgressPercentage = 0m,
+            Status = EnrollmentStatus.Active
+        });
+        context.SaveChanges();
+        Console.WriteLine($"Student {student.Id} enrolled in course {course.Id}.");
     }
 }
