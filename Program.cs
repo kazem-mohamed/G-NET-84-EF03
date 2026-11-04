@@ -23,6 +23,7 @@ class Program
         UnenrollStudent(context, 4, 4);
         DeleteCategorySafely(context, 1);
         DeleteCourse(context, 4);
+        RaisePublishedCoursePrices(context, CourseLevel.Advanced);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -362,5 +363,15 @@ class Program
         // EnrollmentConfiguration specifies cascade delete for Course -> Enrollments.
         var enrollmentsAfter = context.Enrollments.Count(enrollment => enrollment.CourseId == courseId);
         Console.WriteLine($"Deleted course {courseId}; enrollments before: {enrollmentsBefore}, after: {enrollmentsAfter}.");
+    }
+
+    private static void RaisePublishedCoursePrices(LearningPlatformContext context, CourseLevel level)
+    {
+        var affectedRows = context.Courses
+            .Where(course => course.IsPublished && course.Level == level)
+            .ExecuteUpdate(setters => setters
+                .SetProperty(course => course.Price, course => course.Price * 1.10m));
+
+        Console.WriteLine($"Raised prices for {affectedRows} published {level} course(s).");
     }
 }
