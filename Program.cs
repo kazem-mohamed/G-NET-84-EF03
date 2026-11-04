@@ -21,6 +21,7 @@ class Program
         UpdateProgress(context, 1, 1, 100m);
         PublishCourse(context, 3);
         UnenrollStudent(context, 4, 4);
+        DeleteCategorySafely(context, 1);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -309,5 +310,38 @@ class Program
         context.Enrollments.Remove(enrollment);
         context.SaveChanges();
         Console.WriteLine($"Student {studentId} was unenrolled from course {courseId}.");
+    }
+
+    private static void DeleteCategorySafely(LearningPlatformContext context, int categoryId)
+    {
+        var category = context.Categories.Find(categoryId);
+        if (category is null)
+        {
+            Console.WriteLine("Delete category: category not found.");
+            return;
+        }
+
+        try
+        {
+            context.Categories.Remove(category);
+            context.SaveChanges();
+            Console.WriteLine("Category was deleted by the first attempt.");
+            return;
+        }
+        catch (DbUpdateException exception)
+        {
+            Console.WriteLine($"Delete category was blocked: {exception.Message}");
+            context.Entry(category).State = EntityState.Unchanged;
+        }
+
+        if (context.Categories.Any(item => item.ParentCategoryId == categoryId))
+        {
+            Console.WriteLine("Safe delete refused: category still has sub-categories.");
+            return;
+        }
+
+        context.Categories.Remove(category);
+        context.SaveChanges();
+        Console.WriteLine("Category deleted safely.");
     }
 }
