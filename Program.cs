@@ -9,6 +9,7 @@ class Program
         using var context = CreateContext();
         context.Database.Migrate();
         SeedStudentsAndEnrollments(context);
+        AddInstructor(context);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -55,5 +56,28 @@ class Program
             new Enrollment { StudentId = students[4].Id, CourseId = 6, EnrollmentDate = DateTime.UtcNow.AddDays(-5), ProgressPercentage = 0m, Status = EnrollmentStatus.Dropped });
 
         context.SaveChanges();
+    }
+
+    private static void AddInstructor(LearningPlatformContext context)
+    {
+        const string email = "new.instructor@learn.example";
+        var existingInstructor = context.Instructors.FirstOrDefault(instructor => instructor.Email == email);
+        if (existingInstructor is not null)
+        {
+            Console.WriteLine($"Instructor already exists with Id {existingInstructor.Id}.");
+            return;
+        }
+
+        var instructor = new Instructor
+        {
+            FullName = "Hana Ibrahim",
+            Email = email,
+            Bio = "New platform instructor.",
+            DateJoined = DateTime.UtcNow
+        };
+
+        context.Instructors.Add(instructor);
+        context.SaveChanges();
+        Console.WriteLine($"Created instructor with Id {instructor.Id}.");
     }
 }
