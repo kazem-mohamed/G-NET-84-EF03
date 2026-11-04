@@ -14,6 +14,7 @@ class Program
         AddSeveralStudents(context);
         EnrollStudent(context);
         FindCourse(context);
+        FilterCourses(context, 60m, 140m);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -185,5 +186,19 @@ class Program
 
         var courseByTitle = context.Courses.FirstOrDefault(course => course.Title == "C# Fundamentals");
         Console.WriteLine(courseByTitle is null ? "Course by title: not found." : $"Course by title: {courseByTitle.Id}");
+    }
+
+    private static void FilterCourses(LearningPlatformContext context, decimal minimumPrice, decimal maximumPrice)
+    {
+        var courses = context.Courses
+            .Where(course => course.Price >= minimumPrice && course.Price <= maximumPrice)
+            .OrderByDescending(course => course.Price)
+            .Select(course => new { course.Title, course.Level, course.Price })
+            .ToList();
+
+        foreach (var course in courses)
+        {
+            Console.WriteLine($"{course.Title} | {course.Level} | {course.Price:C}");
+        }
     }
 }
