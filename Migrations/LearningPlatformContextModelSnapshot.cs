@@ -47,6 +47,41 @@ namespace G_NET_84_EF03.Migrations
                     b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Software development",
+                            Name = "Programming"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Server-side development",
+                            Name = "Backend",
+                            ParentCategoryId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "ASP.NET development",
+                            Name = "ASP.NET",
+                            ParentCategoryId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Client-side development",
+                            Name = "Frontend",
+                            ParentCategoryId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Visual design",
+                            Name = "Design"
+                        });
                 });
 
             modelBuilder.Entity("G_NET_84_EF03.Course", b =>
@@ -94,6 +129,78 @@ namespace G_NET_84_EF03.Migrations
                     b.HasIndex("InstructorId");
 
                     b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Description = "C# for beginners",
+                            InstructorId = 1,
+                            IsPublished = true,
+                            Level = "Beginner",
+                            Price = 50m,
+                            PublishedDate = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "C# Fundamentals"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 3,
+                            Description = "Build REST APIs",
+                            InstructorId = 1,
+                            IsPublished = true,
+                            Level = "Intermediate",
+                            Price = 120m,
+                            PublishedDate = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "ASP.NET Core APIs"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            Description = "Application architecture",
+                            InstructorId = 1,
+                            IsPublished = false,
+                            Level = "Advanced",
+                            Price = 150m,
+                            Title = "Clean Architecture"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 4,
+                            Description = "Modern frontend basics",
+                            InstructorId = 2,
+                            IsPublished = true,
+                            Level = "Beginner",
+                            Price = 70m,
+                            PublishedDate = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Modern JavaScript"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 4,
+                            Description = "Reusable React patterns",
+                            InstructorId = 2,
+                            IsPublished = false,
+                            Level = "Intermediate",
+                            Price = 110m,
+                            Title = "React Patterns"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 5,
+                            Description = "Design systems",
+                            InstructorId = 3,
+                            IsPublished = true,
+                            Level = "Advanced",
+                            Price = 95m,
+                            PublishedDate = new DateTime(2024, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "UI Design Systems"
+                        });
                 });
 
             modelBuilder.Entity("G_NET_84_EF03.Enrollment", b =>
@@ -158,6 +265,32 @@ namespace G_NET_84_EF03.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Instructors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Bio = "Backend instructor.",
+                            DateJoined = new DateTime(2024, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mona@learn.example",
+                            FullName = "Mona Hassan"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Bio = "Frontend instructor.",
+                            DateJoined = new DateTime(2024, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "omar@learn.example",
+                            FullName = "Omar Adel"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Bio = "Design instructor.",
+                            DateJoined = new DateTime(2024, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "sara@learn.example",
+                            FullName = "Sara Ali"
+                        });
                 });
 
             modelBuilder.Entity("G_NET_84_EF03.Student", b =>
