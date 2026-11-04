@@ -19,6 +19,7 @@ class Program
         PrintCourseRoster(context, 1);
         ChangeCoursePrice(context, 1, 55m);
         UpdateProgress(context, 1, 1, 100m);
+        PublishCourse(context, 3);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -278,5 +279,20 @@ class Program
 
         context.SaveChanges();
         Console.WriteLine($"Updated progress to {progress}% with status {enrollment.Status}.");
+    }
+
+    private static void PublishCourse(LearningPlatformContext context, int courseId)
+    {
+        var course = context.Courses.Find(courseId);
+        if (course is null)
+        {
+            Console.WriteLine("Publish: course not found.");
+            return;
+        }
+
+        course.IsPublished = true;
+        course.PublishedDate ??= DateTime.UtcNow;
+        context.SaveChanges();
+        Console.WriteLine($"Published {course.Title} on {course.PublishedDate:O}.");
     }
 }
