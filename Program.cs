@@ -13,6 +13,7 @@ class Program
         AddCourse(context);
         AddSeveralStudents(context);
         EnrollStudent(context);
+        FindCourse(context);
         Console.WriteLine("Online Learning Platform database is ready.");
     }
 
@@ -175,5 +176,14 @@ class Program
         });
         context.SaveChanges();
         Console.WriteLine($"Student {student.Id} enrolled in course {course.Id}.");
+    }
+
+    private static void FindCourse(LearningPlatformContext context)
+    {
+        var courseById = context.Courses.Find(1);
+        Console.WriteLine(courseById is null ? "Course with Id 1: not found." : $"Course by Id: {courseById.Title}");
+
+        var courseByTitle = context.Courses.FirstOrDefault(course => course.Title == "C# Fundamentals");
+        Console.WriteLine(courseByTitle is null ? "Course by title: not found." : $"Course by title: {courseByTitle.Id}");
     }
 }
